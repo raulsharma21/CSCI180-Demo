@@ -18,12 +18,13 @@ router.post('/register', (req, res) => {
   
   // Check if user already exists
   const userExists = users.find(user => user.username === username);
-  if (userExists) return res.status(400).send('User already registered');
+  if (userExists) return res.status(200).json({message: 'User already registered'});
   
   // Create new user and add to the list (you would hash the password in a real app)
   const newUser = { id: users.length + 1, username, password };
   users.push(newUser);
-  res.status(201).send('User registered successfully');
+  res.status(201).json({message: 'User registered successfully'});
+  console.log(`Created user "${newUser.username}"`)
 });
 
 // Login route
