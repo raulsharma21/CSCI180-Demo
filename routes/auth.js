@@ -5,7 +5,11 @@ const router = express.Router();
 const users = [];
 
 router.get('/test', (req, res) => {
-    res.json({ message: "This is a test route" });
+    res.json({ 
+      message: "This is a test route", 
+      your_headers: req.headers,
+      your_body: req.body
+    });
 });
 
 // Registration route
