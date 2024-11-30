@@ -97,11 +97,11 @@ router.get('/store', (req, res) => {
   {
     const item = items.find(i => i.id == query.id);
     if (!item) return res.status(400).send({message: "No item with this id"});
-    return res.status(200).send(item);
+    return res.status(200).send({items: [item]});
   }
   // Return items in sorted order by first "verified" then second "date"
   sortItems()
-  res.status(200).send(items);
+  res.status(200).send({items: items});
 });
 
 // Add item listing to store route

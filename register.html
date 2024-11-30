@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Endpoint</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Register API Endpoint</h1>
-    <form id="testForm">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+    <div class="center"><h1>Register API Endpoint</h1></div>
+    <div id="register" class="center"> 
+        <form id="testForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
 
-        <button type="submit">Submit</button>
-    </form>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
 
-    <p id="response"></p>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="center">
+        <p id="response"></p>
+    </div>
 
     <script>
         document.getElementById('testForm').addEventListener('submit', async function (event) {
