@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Items</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="center"><h1>Store API Endpoint</h1></div>
+    <div id="store-items">
+        <!-- Store items will be populated here -->
+    </div>
+
+    <!-- Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Add New Item</div>
+            <div class="modal-body">
+                <label for="name">Item Name</label>
+                <br />
+                <input type="text" id="name" placeholder="Enter item name" required>
+                <br />
+                <label for="price">Price</label>
+                <br />
+                <input type="number" id="price" placeholder="Enter item price" required>
+            </div>
+            <div class="modal-footer">
+                <button class="close-btn" id="closeModal">Close</button>
+                <button class="submit-btn" id="submitItem">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="openModal" class="submit-btn" style="margin: 20px;">Add Item</button>
+
+    <script>
+        // Function to fetch and display items
+        function fetchItems() {
+            fetch('http://localhost:3000/api/auth/store')
+                .then(response => response.json())
+                .then(data => {
+                    const items = data.items;
+                    const container = document.getElementById('store-items');
+                    container.innerHTML = ''; // Clear existing items
+
+                    items.forEach(item => {
+                        const itemCard = document.createElement('div');
+                        itemCard.classList.add('item-card');
+                        const verifiedStatus = item.verified !== undefined ? item.verified : false;
+
+                        itemCard.innerHTML = `
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">$${item.price.toFixed(2)}</div>
+                            <div class="item-date">Added on: ${new Date(item.date).toLocaleDateString()}</div>
+                            <div class="item-status ${verifiedStatus ? 'verified' : 'not-verified'}">
+                                ${verifiedStatus ? 'Verified' : 'Not Verified'}
+                            </div>
+                        `;
+                        container.appendChild(itemCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Open the modal
+        document.getElementById('openModal').addEventListener('click', () => {
+            document.getElementById('itemModal').style.display = 'flex';
+        });
+
+        // Close the modal
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('itemModal').style.display = 'none';
+        });
+
+        // Handle the form submission
+        document.getElementById('submitItem').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const price = parseFloat(document.getElementById('price').value);
+
+            if (name && !isNaN(price)) {
+                const itemData = {
+                    name: name,
+                    price: price
+                };
+
+                fetch('http://localhost:3000/api/auth/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(itemData)
+                })
+                    .then(response => response.json())
+                    .then(() => {
+                        // Close the modal and refresh the items
+                        document.getElementById('itemModal').style.display = 'none';
+                        fetchItems();
+                    })
+                    .catch(error => {
+                        console.error('Error submitting data:', error);
+                    });
+            } else {
+                alert('Please provide both name and price');
+            }
+        });
+
+        // Initial fetch and display items
+        fetchItems();
+    </script>
+
+</body>
+</html>
