@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+// ************************
+//   FUNCTION LEVEL DEMO
+// ************************
+
 // Mock user data (in a real app, you would use a database)
 const users = [];
 
@@ -24,7 +28,7 @@ router.post('/register', (req, res) => {
   const newUser = { id: users.length + 1, username, password };
   users.push(newUser);
   res.status(201).send({message: 'User registered successfully'});
-  console.log(`Created user "${newUser.username}"`)
+  console.log(`API: Created user "${newUser.username}"`)
 });
 
 // Login route
@@ -59,8 +63,65 @@ router.post('/reset-password', (req, res) => {
 });
 
 
-router.get('/store', (req, res) => {
 
+// ******************************
+//   OBJECT-PROPERTY LEVEL DEMO
+// ******************************
+
+// Mock store data
+const day = 86400000
+const date = new Date();
+id = 1
+const items = [
+  {id: id++, name: 'Wireless Earbuds', price: 49.99, date: date.getTime() - day * 15, verified: true},
+  {id: id++, name: 'Water Bottle', price: 27.50, date: date.getTime() - day * 5},
+  {id: id++, name: 'Yoga Mat', price: 35.00, date: date.getTime() - day * 42},
+  {id: id++, name: 'Desk Lamp', price: 15.00, date: date.getTime() - day * 20},
+  {id: id++, name: 'Wireless Mouse', price: 45.00, date: date.getTime() - day * 21, verified: true},
+  {id: id++, name: 'CATAN Board Game', price: 25.00, date: date.getTime() - day * 33}
+]
+
+// Sort items by first "verified" then second "date"
+function sortItems() {
+  items.sort((item1, item2) => {
+    if ((item1.verified || false) != (item2.verified || false)) return (item2.verified || false) - (item1.verified || false);
+    return item2.date - item1.date;
+  });
+}
+
+// Get items from store route
+router.get('/store', (req, res) => {
+  const query = req.query;
+  // Return explicit item if given id
+  if (query.id)
+  {
+    const item = items.find(i => i.id == query.id);
+    if (!item) return res.status(400).send({message: "No item with this id"});
+    return res.status(200).send(item);
+  }
+  // Return items in sorted order by first "verified" then second "date"
+  sortItems()
+  res.status(200).send(items);
+});
+
+// Add item listing to store route
+router.post('/store', (req, res) => {
+  const body = req.body;
+
+  // Check if valid listing info is sent
+  if (!body.name || !body.price) return res.status(400).send({message: 'Listing requires item name and price'});
+
+  // Create item 
+  const new_item = {id: id++, name: body.name, price: body.price, date: new Date().getTime()};
+
+  // Check if item should be verified
+  if (body.verified) {
+    new_item.verified = true;
+  }
+
+  items.push(new_item)
+  res.status(201).send({ message: "Item listed."});
+  console.log(`API: Item listed "${body.name}"`)
 });
 
 module.exports = router;
