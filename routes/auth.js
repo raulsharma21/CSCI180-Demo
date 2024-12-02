@@ -94,7 +94,7 @@ router.get('/orders/:orderId', (req, res) => {
         <h2>${order.name}</h2>
         <hr />
         <h3>Expected: ${new Date(order.expected).toDateString()}</h3>
-        <h3>Progress: <span style="${order.progress == 'Alert (check account)' ? 'color: red' : ''}">${order.progress}</span></h3>
+        ${ order.complete ? '' : `<h3>Progress: <span style="${order.progress == 'Alert (check account)' ? 'color: red' : ''}">${order.progress}</span></h3>`}
         <h3>Complete: <span style="${order.complete ? 'color: green' : ''}">${order.complete ? 'Complete' : 'Incomplete'}</span></h3>   
       </div>
     </body>
