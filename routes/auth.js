@@ -73,9 +73,10 @@ const date = new Date();
 
 id = 1
 const orders = [
-  {id: id++, name: "Water Bottle", expected: date.getTime() + day * 2, complete: false},
-  {id: id++, name: "Wireless Mouse", expected: date.getTime() + day * 7, complete: false},
-  {id: id++, name: "CATAN Board Game", expected: date.getTime() + day * 4, complete: false}
+  {id: id++, name: "Water Bottle", expected: date.getTime() + day * 2, progress: 'In Transit', complete: false},
+  {id: id++, name: "Wireless Mouse", expected: date.getTime() + day * 5, progress: 'Delayed', complete: false},
+  {id: id++, name: "Dumbbells (8 pack)", expected: date.getTime() - day, progress: 'Delivered', complete: true},
+  {id: id++, name: "CATAN Board Game", expected: date.getTime() + day * 4, progress: 'Alert (check account)', complete: false}
 ]
 
 // Get order route
@@ -89,10 +90,12 @@ router.get('/orders/:orderId', (req, res) => {
   // Return order
   res.status(200).send(`
     <body style="display: flex; justify-content: center; margin: auto; font-family: arial">
-      <div style="margin-top: 300px; width: 300px; height: 150px; padding: 15px; border: solid black 1px; border-radius: 4px">
+      <div style="margin-top: 300px; width: 350px; height: 200px; padding: 15px; border: solid black 1px; border-radius: 8px">
         <h2>${order.name}</h2>
+        <hr />
         <h3>Expected: ${new Date(order.expected).toDateString()}</h3>
-        <h3>Complete: ${order.complete ? 'complete' : 'incomplete'}</h3>
+        <h3>Progress: <span style="${order.progress == 'Alert (check account)' ? 'color: red' : ''}">${order.progress}</span></h3>
+        <h3>Complete: <span style="${order.complete ? 'color: green' : ''}">${order.complete ? 'Complete' : 'Incomplete'}</span></h3>   
       </div>
     </body>
   `);
@@ -109,7 +112,7 @@ router.get('/orders/:orderId/complete', (req, res) => {
   
   // Complete order
   order.complete = true;
-  res.status(200).send(`<h2>Order complete</h2>`);
+  res.status(200).send(`<h2 style="font-family: arial">Order complete</h2>`);
   console.log(`API: Order ${order.id} completed`)
 });
 
