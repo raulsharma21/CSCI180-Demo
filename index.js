@@ -13,8 +13,8 @@ app.use(express.json());
 // Allow all origins (use cautiously)
 app.use(cors());
 
-// Serve static HTML files
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)));
 
 // Use the authentication routes
 app.use('/api/auth', authRoutes);
