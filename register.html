@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Endpoint</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
+
 <body>
 
-    <div class="center"><h1>Register API Endpoint</h1></div>
-    <div id="register" class="center"> 
+    <div class="center">
+        <h1>Create New User</h1>
+    </div>
+    <div id="register" class="center">
         <form id="testForm">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required><br><br>
@@ -24,15 +28,21 @@
         <p id="response"></p>
     </div>
 
+    <div id="userList" class="center">
+        <div>
+            <button id="refreshUsers" type="button">Get Available Users</button>
+        </div>
+    </div>
+
     <script>
         document.getElementById('testForm').addEventListener('submit', async function (event) {
             event.preventDefault(); // Prevent form from reloading the page
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value; // Assuming the username input serves as the unique ID
+            const password = document.getElementById('password').value; // New password to update
 
             try {
-                const response = await fetch('http://localhost:3000/api/auth/register', {
+                const response = await fetch('http://localhost:3000/api/auth/updateUsers', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -45,11 +55,31 @@
                 }
 
                 const data = await response.json();
-                document.getElementById('response').textContent = `Response: ${JSON.stringify(data)}`;
+                document.getElementById('response').textContent = `Response: ${data.message}`;
+                console.log(`Updated User: ${JSON.stringify(data.updatedUser)}`);
             } catch (error) {
                 document.getElementById('response').textContent = `Error: ${error.message}`;
+                console.error(`Error: ${error.message}`);
+            }
+        });
+
+        document.getElementById('refreshUsers').addEventListener('click', async function () {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/getUsers', {
+                    method: 'GET'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const users = await response.json();
+                alert(`Available Users: ${JSON.stringify(users)}`); // Display users in an alert for now
+            } catch (error) {
+                console.error(`Error fetching users: ${error.message}`);
             }
         });
     </script>
 </body>
+
 </html>
