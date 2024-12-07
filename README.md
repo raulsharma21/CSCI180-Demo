@@ -70,6 +70,40 @@ The response should look like this:
 ```
 ### Function Level Authorization Demo
 
+This demo showcases how improper function-level authorization can lead to security vulnerabilities by allowing unauthorized users to perform sensitive actions. The example involves an application with the following endpoints:  
+
+1. **`POST /updateUsers`**  
+   - Allows updating or creating user profiles.  
+2. **`DELETE /updateUsers`**  
+   - Deletes a user profile.  
+3. **`GET /getUsers`**  
+   - Retrieves a list of all usernames.  
+
+### Steps to Demonstrate the Vulnerability  
+
+1. **Observing Normal Behavior**  
+   - Log in to the application using valid credentials as a regular user.  
+   - Navigate through the application and observe network activity using the browser’s developer tools (Network tab).  
+   - Note that as a regular user, the following functionalities are allowed:  
+     - Update their own profile using `POST /updateUsers`.  
+     - View a list of usernames using `GET /getUsers`.  
+
+2. **Identifying the Vulnerable Endpoint**  
+   - The `POST /updateUsers` endpoint is used to update or create user profiles. However, by manipulating the HTTP method, an attacker can send unauthorized requests.  
+   - Using a tool like Postman or by modifying the request in the browser’s developer tools, change the request method to `DELETE`.  
+   - Example malicious request:  
+     ```json
+     DELETE /updateUsers  
+     {  
+       "username": "admin"  
+     }  
+     ```  
+
+3. **Exploitation**  
+   - Send the modified `DELETE` request with another user's username in the body (e.g., `"admin"`).  
+   - Observe that the account gets deleted despite the logged-in user not having permissions to perform this action.  
+
+
 ### Object Level Authorization Demo
 
 This demo simulates a delivery tracking feature for an ecommerce website. We assume that, after a purchase, users are given links to info about their delivery found at URL's like `/api/auth/orders/{orderID}` in an email. We can also assume that there is a feature for users to mark packages as complete manually, also in the email. These links follow the format `/api/auth/orders/{orderID}/complete` which automatically mark the delivery as complete when visited.
