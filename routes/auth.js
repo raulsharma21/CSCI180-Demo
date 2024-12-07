@@ -1,6 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
+router.get('/test', (req, res) => {
+  res.json({ 
+    message: "This is a test route", 
+    your_headers: req.headers,
+    your_body: req.body
+  });
+});
+
 // ************************
 //   FUNCTION LEVEL DEMO
 // ************************
